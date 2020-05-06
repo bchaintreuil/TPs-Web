@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!-- TP n°6 et n°7 -- Tout sauf la question 16-->
+<html>
+	<head>
+		<title>TP n°6</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="style.css"/>
+		<script src="toc.js"></script>
+	</head>
+	<body>
+		<section>
+			<h1 id="title_table">Table</h1>
+			<ol id="table">
+			</ol>
+		</section>
+
+		<section>
+			<h1 id="title">Essais JavaScript</h1>
+			<button id="hw">Hello, World !</button>
+			<button id="titleButton">Changer le titre</button>
+			<br/>
+			<button id="backgroundColor">Changer la couleur d'arrière plan</button>
+		</section>
+		
+		<br/>
+
+		<section>
+			<h1 id="modif">Modification image</h1>
+			<img id="seal" src="seal.png"/>
+		</section>
+
+		<br/>
+
+		<section>
+			<h1 id="formulaire">Validation formulaire</h1>
+			<form id="form">
+				<label for="lastname">Nom :</label>
+				<input type="text" id="lastname" size="20"/>
+				<br/>
+				<label for="firstname">Prénom :</label>
+				<input type="text" id="firstname" size="20"/>
+				<br/>
+				<p id="alert"></p>
+				<br/>
+				<input id="submit" type="submit" value="Envoyer"/>
+			</form>
+		</section>
+
+		<section>
+			<h1 id="function">Appel à une fonction retournant une valeur</h1>
+			<button id="radius">Entrez la valeur du rayon</button>
+		</section>
+
+		<section>
+			<h1 id="npair">Ce nombre est-il pair ?</h1>
+			<button id="pair">Lancer la boucle</button>
+		</section>
+
+		<section>
+			<h1 id="multip" >Tables de multiplication</h1>
+			<table id="board"></table>
+		</section>
+
+		<section>
+			<h1 id="euclide">Algorithme d'Euclide</h1>
+			<form id="pgcd">
+				<input type="radio" name="radio" value="PGCD" checked/> PGCD
+				<input type="radio" name="radio" value="PPCM"/> PPCM
+				<br/>
+				<label for="firstInt">Entrer un nombre entier</label>
+				<input type="text" id="firstInt" size="20"/>
+				<br/>
+				<label for="secondInt">Entrer un autre nombre entier</label>
+				<input type="text" id="secondInt" size="20"/>
+				<br/>
+				<input id="submit2" type="submit" value="Calculer"/>
+				<br/>
+				<div id="result"></div>
+			</form>
+		</section>
+
+		<script>
+			window.onload = function() {
+				toc();
+				var hwButton = document.getElementById("hw");
+				var ctButton = document.getElementById("titleButton");
+				var sealPic = document.getElementById("seal");
+				var bgButton = document.getElementById("backgroundColor");
+				var form = document.getElementById("form");
+				var radiusButton = document.getElementById("radius");
+				var pairButton = document.getElementById("pair");
+				var board = document.getElementById("board");
+				var pgcd = document.getElementById("pgcd");
+
+				function PGCD(m, n) {
+					var t;
+					t = m;
+					while(n > 0){
+						t = m % n;
+						m = n;
+						n = t;
+					}
+					return m;
+				}
+
+				function PPCM(m, n) {
+					return Math.abs(m*n)/PGCD(m,n);
+				}
+
+				pgcd.addEventListener('submit', f => {
+					var firstInt = document.getElementById("firstInt");
+					var secondInt = document.getElementById("secondInt");
+					var result = document.getElementById("result");
+					var radios = document.getElementsByName("radio");
+
+					var mode = 0;
+					for(var i = 0; i < radios.length; i++) {
+						if (radios[i].checked && radios[i].value == "PGCD") {
+							mode = 0;
+							break;
+						} else if (radios[i].checked && radios[i].value == "PPCM"){
+							mode = 1;
+							break;
+						}}
+					
+					if (firstInt.value == "" || secondInt.value == "") {
+						result.innerHTML = "<p>Veuillez remplir tous les champs !</p>";
+						f.preventDefault();
+					} else {
+						var m = parseInt(firstInt.value);
+						var n = parseInt(secondInt.value);
+						if (!mode) {
+							pgcd = PGCD(m, n);
+							result.innerHTML = "<br/><label for='return'>Le PGCD qui divise à la fois ces deux entiers est </label><input type='text' id='return' value='" + pgcd +"' readonly size='4'/>"
+							f.preventDefault();
+						} else {
+							ppcm = PPCM(m, n);
+							result.innerHTML = "<br/><label for='return'>Le PPCM de ces deux entiers est </label><input type='text' id='return' value='" + ppcm +"' readonly size='4'/>"
+							f.preventDefault();
+						}
+					}
+				});
+
+				var content = ""
+            	for(var i = 1; i < 13; i++){
+                	content = content + '<tr>'
+                	for(var j = 1; j < 13; j++){
+						var style = ""
+						if (i*j % 2 == 0){
+							style = "background-color: rgba(0, 0, 255, 0.3)";
+						} else if (i*j % 3 == 0){
+							style = "background-color: rgba(255, 0, 0, 0.3)";
+						}
+						content = content + '<td style="' + style + '">' + (i*j) + '</td>'
+					}
+                	content = content + '</tr>'
+            	}
+     			board.innerHTML = content
+
+				pairButton.onclick = function() {
+					for(var n = 0; n < 21; n++) {
+						if(n % 2 == 0) {
+							console.log(n + " est pair.");
+						} else {
+							console.log(n + " est impair.");
+						}
+					}
+				}
+
+				radiusButton.onclick = function() {
+					radius = parseFloat(prompt("Entrez la valeur du rayon", "1"));
+					area = 3.14*radius*radius;
+					window.alert("Surface du cercle : " + area);
+				}
+
+				form.addEventListener('submit', e => {
+					var lastname = document.getElementById("lastname");
+					var firstname = document.getElementById("firstname");
+					var alert = document.getElementById("alert");
+					if (lastname.value == "" || firstname.value == "") {
+						alert.innerHTML = "Veuillez remplir tous les champs !";
+						e.preventDefault();
+					} else {
+						window.alert("Le formulaire peut être envoyer !");
+					}
+				});
+
+				bgButton.onclick = function() {
+					document.body.style.backgroundColor = "lightblue";
+				}
+
+				sealPic.onmouseover = function() {
+					this.style.height = 460 + 'px';
+					this.style.width = 438 + 'px';
+				};
+
+				sealPic.onmouseout = function() {
+					this.style.height = 230 + 'px';
+					this.style.width = 219 + 'px';
+				};
+
+
+				function hw() {
+					alert("Hello, World !");
+				};
+
+				function changeTitle() {
+					title = document.getElementById("title");
+					newTitle = prompt("Nouveau titre");
+					if (newTitle != null) {
+						title.innerHTML = newTitle;
+					}
+				};
+					
+				hwButton.onclick = hw;
+				ctButton.onclick = changeTitle;
+			};
+		</script>
+	</body>	
+</html>
